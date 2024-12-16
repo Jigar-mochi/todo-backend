@@ -1,8 +1,23 @@
 const Note = require("../models/notesSchema");
 const asyncHandler = require("express-async-handler");
 
-const getNotes = asyncHandler(async (req, res) => {
-	console.log("id", req.params.id);
+const getAllNotes = asyncHandler(async (req, res) => {
+	try {
+		const note = await Note.findById(req.params.id);
+		console.log("note", note);
+		if (note.user_id.toString() !== req.user.id) {
+			res.status(403).json({ success: false, message: 'User not found.' });
+		}
+	} catch (error) {
+		res.status(403).json({ success: false, message: 'User not found.' });
+	}
+	if (!note) {
+		console.log("test error", note);
+		res.status(404).json({ success: false, message: 'Required data is missing.' });
+	}
+	res.status(200).json({ success: false, message: 'Required data is missing.', data: note });
+});
+const getNote = asyncHandler(async (req, res) => {
 	const note = await Note.findById(req.params.id);
 	if (note.user_id.toString() !== req.user.id) {
 		res.status(403).json({ success: false, message: 'User not found.' });
@@ -29,7 +44,7 @@ const createNewNote = asyncHandler(async (req, res) => {
 	res.status(201).json({ success: false, message: 'Note created successfully', data: noteResults });
 });
 
-const editNote = asyncHandler(async (req, res) => {
+const updateNote = asyncHandler(async (req, res) => {
 	const note = await Note.findById(req.params.id);
 	if (!note) {
 		res.status(404).json({ success: false, message: 'Contact not found' });
@@ -58,9 +73,9 @@ const deleteNote = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-	getContacts,
+	getAllNotes,
 	createNewNote,
-	getNotes,
-	editNote,
+	getNote,
+	updateNote,
 	deleteNote,
 };
