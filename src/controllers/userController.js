@@ -2,7 +2,7 @@ const auth = require("../models/authSchema");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const registerUserSchema = require("../utils/validations");
+const { registerUserSchema } = require("../utils/validations");
 
 const getUser = asyncHandler(async (req, res) => {
 	res.status(200).json(req.user);
@@ -25,7 +25,7 @@ const loginUser = asyncHandler(async (req, res) => {
 				},
 			},
 			process.env.ACCESS_TOKEN_SECRET,
-			{ expiresIn: "15m" }
+			{ expiresIn: "1d" }
 		);
 		console.log("accessToken", accessToken);
 		res.status(200).json({ success: true, message: 'User logged in successfully.', data: { authToken: accessToken } });
