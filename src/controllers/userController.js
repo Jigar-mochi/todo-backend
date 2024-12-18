@@ -18,11 +18,7 @@ const loginUser = asyncHandler(async (req, res) => {
 	if (user && (await bcrypt.compare(password, user.password))) {
 		const accessToken = await jwt.sign(
 			{
-				user: {
-					userName: user.userName,
-					email: user.email,
-					id: user._id,
-				},
+				id: user._id,
 			},
 			process.env.ACCESS_TOKEN_SECRET,
 			{ expiresIn: "1d" }
@@ -57,8 +53,15 @@ const registerUser = asyncHandler(async (req, res) => {
 		email,
 		password: hashedPassword,
 	});
+	const accessToken = await jwt.sign(
+		{
+			id: user._id,
+		},
+		process.env.ACCESS_TOKEN_SECRET,
+		{ expiresIn: "1d" }
+	);
 	if (user) {
-		return res.status(201).json({ success: true, message: 'User registered successfully' });
+		return res.status(201).json({ success: true, message: 'User registered successfully', data: { accessToken, user } });
 	} else {
 		return res.status(400).json({ success: false, message: "Failed to register user" });
 	}
