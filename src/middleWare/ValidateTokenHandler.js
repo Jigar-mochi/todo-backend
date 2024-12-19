@@ -4,7 +4,8 @@ const asyncHandler = require("express-async-handler");
 const validateTokenHandler = asyncHandler(async (req, res, next) => {
 	let token;
 	let authHeader = req.headers.Authorization || req.headers.authorization;
-	if(!authHeader){
+	if (!authHeader) {
+		res.status(401);
 		throw new Error("User is not authorized or token is missing");
 	}
 	if (authHeader && authHeader.startsWith("Bearer")) {
@@ -18,7 +19,7 @@ const validateTokenHandler = asyncHandler(async (req, res, next) => {
 				res.status(401);
 				throw new Error("User is not authorized");
 			}
-			req.user = decoded.user; 
+			req.user = decoded;
 			next();
 		});
 	}

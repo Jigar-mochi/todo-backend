@@ -23,8 +23,7 @@ const loginUser = asyncHandler(async (req, res) => {
 			process.env.ACCESS_TOKEN_SECRET,
 			{ expiresIn: "1d" }
 		);
-		console.log("accessToken", accessToken);
-		res.status(200).json({ success: true, message: 'User logged in successfully.', data: { authToken: accessToken } });
+		res.status(200).json({ success: true, message: 'User logged in successfully.', data: { authToken: accessToken, user } });
 	} else {
 		res.status(400).json({ success: false, message: "Email or password is wrong" });
 	}
